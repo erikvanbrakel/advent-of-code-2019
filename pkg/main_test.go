@@ -10,33 +10,34 @@ import (
 var expectedResults = map[int]int {
 	12: 2,
 	14: 2,
-	1969: 654,
-	100756: 33583,
+	1969: 966,
+	100756: 50346,
 }
 
 func TestDay1(t *testing.T) {
 	for mass,expected := range expectedResults {
-		result := CalculateFuel(mass)
+		result := CalculateTotalFuel(mass)
 
 		if result != expected {
-			t.Errorf("expected CalculateFuel(%v) to yield %v, got %v", mass, expected, result)
+			t.Errorf("expected CalculateTotalFuel(%v) to yield %v, got %v", mass, expected, result)
 		}
 	}
 }
 
 func TestDay1Sum(t *testing.T) {
 	file, err := os.Open("../input_files/day_1.txt")
-	defer file.Close()
 	if err != nil {
 		t.Error(err)
 	}
+	defer file.Close()
+
 
 	scanner := bufio.NewScanner(file)
 
 	total := 0
 	for scanner.Scan() {
 		mass, _ := strconv.Atoi(scanner.Text())
-		total += CalculateFuel(mass)
+		total += CalculateTotalFuel(mass)
 	}
 
 	t.Log(total)
