@@ -25,7 +25,7 @@ func TestDay1(t *testing.T) {
 }
 
 func TestDay1Sum(t *testing.T) {
-	file, err := os.Open("input_files/day_1.txt")
+	file, err := os.Open("../input_files/day_1.txt")
 	if err != nil {
 		t.Error(err)
 	}

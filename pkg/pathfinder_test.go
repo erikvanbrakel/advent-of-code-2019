@@ -66,7 +66,7 @@ func TestPathfinder(t *testing.T) {
 }
 
 func TestPathfinderFromFile(t *testing.T) {
-	file, err  := os.Open("input_files/day_3.txt")
+	file, err  := os.Open("../input_files/day_3.txt")
 	if err != nil {
 		t.Error(err)
 	}

@@ -37,7 +37,7 @@ func TestComputer(t *testing.T) {
 		}
 	}
 
-	computer, err := ComputerFromFile("input_files/day_2.txt")
+	computer, err := ComputerFromFile("../input_files/day_2.txt")
 	if err != nil {
 		t.Error(err)
 	} else {
@@ -52,7 +52,7 @@ func TestNounAndVerb(t *testing.T) {
 	expectedValue := 19690720
 	for k := 0; k < 100; k++ {
 		for v := 0; v < 100; v++ {
-			computer, err := ComputerFromFile("input_files/day_2.txt")
+			computer, err := ComputerFromFile("../input_files/day_2.txt")
 			if err != nil {
 				t.Error(err)
 			} else {

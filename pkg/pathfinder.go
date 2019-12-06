@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 type Coordinate struct {
@@ -23,13 +24,17 @@ func (c *Coordinate) ManhattanDistance(o *Coordinate) int {
 
 func (p *Path) Intersect(p2 *Path) []Coordinate {
 	intersections := []Coordinate {}
-	for _,c1 := range p.Coordinates {
-		for _,c2 := range p2.Coordinates {
-			if c1.X == c2.X && c1.Y == c2.Y {
-				intersections = append(intersections, c1)
-			}
+
+	hashMap := map[string]int {}
+	for _, c := range p.Coordinates {
+		hashMap[fmt.Sprintf("%v-%v", c.X, c.Y)] = 1
+	}
+	for _, c := range p2.Coordinates {
+		if hashMap[fmt.Sprintf("%v-%v", c.X, c.Y)] == 1 {
+			intersections = append(intersections, c)
 		}
 	}
+
 	return intersections
 }
 
