@@ -73,3 +73,50 @@ func TestOrbitsFromFile(t *testing.T) {
     }
     t.Log(totalOrbits)
 }
+
+
+func TestFindHopsBetweenNodes(t *testing.T) {
+    testData := []string {
+        "COM)B",
+        "B)C",
+        "C)D",
+        "D)E",
+        "E)F",
+        "B)G",
+        "G)H",
+        "D)I",
+        "E)J",
+        "J)K",
+        "K)L",
+        "K)YOU",
+        "I)SAN",
+    }
+
+    {
+        roots := BuildTree(testData)
+
+        for _, root := range roots {
+            you := root.FindDescendant("YOU")
+            santa := root.FindDescendant("SAN")
+            if you != nil && santa != nil {
+                distance := you.DistanceTo(santa)
+                t.Logf("Distance: %v", distance)
+            }
+        }
+    }
+    {
+        roots, err := BuildTreeFromFile("../input_files/day_6.txt")
+        if err != nil {
+            t.Error(err)
+        }
+        for _, root := range roots {
+            you := root.FindDescendant("YOU")
+            santa := root.FindDescendant("SAN")
+            if you != nil && santa != nil {
+                distance := you.DistanceTo(santa)
+                t.Logf("Distance: %v", distance)
+            }
+        }
+    }
+
+}

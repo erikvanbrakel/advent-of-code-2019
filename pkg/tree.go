@@ -80,3 +80,45 @@ func (n *Node) FindDescendants() []*Node {
     }
     return descendants
 }
+
+func (n *Node) FindDescendant(data string) *Node {
+    if n.Data == data { return n }
+    for _,c := range n.Children {
+        descendant := c.FindDescendant(data)
+        if descendant != nil {
+            return descendant
+        }
+    }
+    return nil
+}
+
+func (n *Node) DistanceTo(other *Node) int {
+    a1 := n.FindAncestors()
+    a2 := other.FindAncestors()
+    hashmap := map[string]*Node {}
+    for _, v := range a1 {
+        hashmap[v.Data] = v
+    }
+    for j:=len(a2)-1;j>=0;j-- {
+        v := a2[j]
+        if hashmap[v.Data] != nil {
+            distance := 0
+            for i:=0;i<len(a1);i++ {
+                v2 := a1[len(a1)-i-1]
+                if v2.Data == v.Data {
+                    distance += i
+                    break
+                }
+            }
+            for i:=0;i<len(a2);i++ {
+                v2 := a2[len(a2)-i-1]
+                if v2.Data == v.Data {
+                    distance += i
+                    break
+                }
+            }
+            return distance
+        }
+    }
+    return 0
+}
