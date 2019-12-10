@@ -1,7 +1,8 @@
 package pkg
 
 import (
-	"fmt"
+    "errors"
+    "fmt"
 	"strings"
 	"testing"
 )
@@ -141,7 +142,7 @@ func TestComputer(t *testing.T) {
         }
         t.Run(v.Name, func(t *testing.T) {
             computer := NewComputer(v.Program)
-            computer.InputRegister = v.Input
+            computer.Inputs = []int { v.Input }
             computer.OutputRegister = v.Output
             computer.Run()
             v.Assertion(computer, t)
@@ -166,7 +167,7 @@ func TestDiagnostics(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		} else {
-			computer.InputRegister = systemId
+			computer.Inputs = []int { systemId }
 			err := computer.Run()
 			if err != nil {
 				t.Log(strings.Join(computer.Debugger, "\n"))
@@ -195,4 +196,63 @@ func TestNounAndVerb(t *testing.T) {
             }
         }
     }
+}
+
+// Heap's algorithm
+func generatePermutations(a []int, size int) (result [][]int) {
+    if size == 1 {
+        b := make([]int, len(a))
+        copy(b,a)
+        result = append(result, b)
+    }
+
+    for i := 0; i < size; i++ {
+        result = append(result, generatePermutations(a, size-1)...)
+
+        if size%2 == 1 {
+            a[0], a[size-1] = a[size-1], a[0]
+        } else {
+            a[i], a[size-1] = a[size-1], a[i]
+        }
+    }
+    return result
+}
+func TestThrusterInputs(t *testing.T) {
+
+    combinations := generatePermutations([]int { 0,1,2,3,4 }, 5)
+
+    findMaxThrusterSetting := func(program []int, expectedOutput int) (int, error) {
+        maxOutput := 0
+        for _, c := range combinations {
+                computer := NewComputer(program)
+
+            output := 0
+            for _, p := range c {
+                computer.Reset()
+                computer.Inputs = []int{p, output}
+                computer.Run()
+                output = computer.OutputRegister
+            }
+            if maxOutput < output {
+                maxOutput = output
+            }
+        }
+        if maxOutput != expectedOutput {
+            return maxOutput, errors.New(fmt.Sprintf("expected %v, found %v", expectedOutput, maxOutput))
+        }
+        return maxOutput, nil
+    }
+
+    if _, err := findMaxThrusterSetting([]int { 3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0 }, 43210); err != nil { t.Error(err) }
+    if _, err := findMaxThrusterSetting([]int { 3,23,3,24,1002,24,10,24,1002,23,-1,23, 101,5,23,23,1,24,23,23,4,23,99,0,0 }, 54321); err != nil { t.Error(err) }
+    if _, err := findMaxThrusterSetting([]int { 3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33, 1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0 }, 65210); err != nil { t.Error(err) }
+
+    program, err := LoadProgram("../input_files/day_7.txt")
+    if err != nil {
+        t.Error(err)
+    }
+
+    maxOutput, _ := findMaxThrusterSetting(program, 0)
+    t.Log(maxOutput)
+
 }
